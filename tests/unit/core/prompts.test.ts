@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { promptForMissingOptions } from "../../../src/core/prompts";
+import { promptForMissingOptions } from "@/core/prompts";
 import prompts from "prompts";
 
 vi.mock("prompts");
-vi.mock("../../../src/core/exec", () => ({
+vi.mock("@/core/exec", () => ({
   cmdExists: vi.fn(() => Promise.resolve(true)),
 }));
 
@@ -15,6 +15,7 @@ describe("prompts", () => {
   describe("promptForMissingOptions", () => {
     it("should return defaults when --yes flag is used", async () => {
       const result = await promptForMissingOptions(
+        undefined,
         undefined,
         undefined,
         undefined,
@@ -37,6 +38,7 @@ describe("prompts", () => {
       const result = await promptForMissingOptions(
         "my-project",
         "pages",
+        "pnpm",
         false,
         "public",
         false,
@@ -62,6 +64,7 @@ describe("prompts", () => {
       const result = await promptForMissingOptions(
         undefined,
         "app",
+        "yarn",
         true,
         "private",
         true,
@@ -82,6 +85,7 @@ describe("prompts", () => {
       const result = await promptForMissingOptions(
         "test-project",
         undefined,
+        "bun",
         false,
         undefined,
         false,

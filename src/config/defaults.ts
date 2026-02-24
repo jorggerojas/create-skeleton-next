@@ -1,7 +1,9 @@
+import type { Manager } from "@/core/context";
 export const DEFAULTS = {
   projectName: "next-skeleton-app",
   router: "app",
   github: { enabled: true, visibility: "private" },
+  manager: "pnpm" as Manager,
   install: true,
   shadcn: {
     enabled: true as const,

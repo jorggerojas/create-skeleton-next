@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { Context } from "../../../core/context";
+import type { Context } from "@/core/context";
 
 export function ensureComponentsJson(ctx: Context) {
   const componentsJsonPath = path.join(ctx.targetDir, "components.json");

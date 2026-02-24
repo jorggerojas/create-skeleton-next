@@ -1,4 +1,5 @@
 export type Router = "app" | "pages";
+export type Manager = "pnpm" | "bun" | "npm" | "yarn";
 
 export type Context = {
   projectName: string;
@@ -18,4 +19,6 @@ export type Context = {
     enabled: boolean;
     components: string[];
   };
+
+  manager: Manager;
 };

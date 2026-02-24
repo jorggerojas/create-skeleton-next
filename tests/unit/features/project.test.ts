@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { createProjectFromTemplate } from "../../../src/features/project/createFromTemplate";
-import type { Context } from "../../../src/core/context";
+import { createProjectFromTemplate } from "@/features/project/createFromTemplate";
+import type { Context } from "@/core/context";
 
-vi.mock("../../../src/core/exec", () => ({
+vi.mock("@/core/exec", () => ({
   run: vi.fn(),
   cmdExists: vi.fn(),
 }));
@@ -30,6 +30,7 @@ describe("createProjectFromTemplate", () => {
         enabled: true,
         components: [],
       },
+      manager: "pnpm",
     };
   });
 
@@ -49,7 +50,7 @@ describe("createProjectFromTemplate", () => {
   });
 
   it("should use gh CLI when available and github enabled", async () => {
-    const { run, cmdExists } = await import("../../../src/core/exec");
+    const { run, cmdExists } = await import("@/core/exec");
     vi.mocked(cmdExists).mockResolvedValue(true);
     vi.mocked(run).mockClear();
     vi.mocked(run).mockResolvedValue();
@@ -59,13 +60,14 @@ describe("createProjectFromTemplate", () => {
     await createProjectFromTemplate(ctx);
 
     const calls = vi.mocked(run).mock.calls;
-    expect(calls[0][0]).toBe("gh");
-    expect(calls[0][1]).toContain("repo");
-    expect(calls[0][1]).toContain("create");
+    expect(calls[0]).toBeDefined();
+    expect(calls[0]?.[0]).toBe("gh");
+    expect(calls[0]?.[1]).toContain("repo");
+    expect(calls[0]?.[1]).toContain("create");
   });
 
   it("should fallback to git clone when gh not available", async () => {
-    const { run, cmdExists } = await import("../../../src/core/exec");
+    const { run, cmdExists } = await import("@/core/exec");
     vi.mocked(cmdExists).mockResolvedValue(false);
     vi.mocked(run).mockClear();
     vi.mocked(run).mockResolvedValue();
@@ -78,13 +80,14 @@ describe("createProjectFromTemplate", () => {
     await createProjectFromTemplate(ctx);
 
     const calls = vi.mocked(run).mock.calls;
-    expect(calls[0][0]).toBe("git");
-    expect(calls[0][1]).toContain("clone");
-    expect(calls[0][1]).toContain("--depth=1");
+    expect(calls[0]).toBeDefined();
+    expect(calls[0]?.[0]).toBe("git");
+    expect(calls[0]?.[1]).toContain("clone");
+    expect(calls[0]?.[1]).toContain("--depth=1");
   });
 
   it("should use git clone when github disabled", async () => {
-    const { run, cmdExists } = await import("../../../src/core/exec");
+    const { run, cmdExists } = await import("@/core/exec");
     vi.mocked(cmdExists).mockResolvedValue(true);
     vi.mocked(run).mockClear();
     vi.mocked(run).mockResolvedValue();
@@ -96,12 +99,13 @@ describe("createProjectFromTemplate", () => {
     await createProjectFromTemplate(ctx);
 
     const calls = vi.mocked(run).mock.calls;
-    expect(calls[0][0]).toBe("git");
-    expect(calls[0][1]).toContain("clone");
+    expect(calls[0]).toBeDefined();
+    expect(calls[0]?.[0]).toBe("git");
+    expect(calls[0]?.[1]).toContain("clone");
   });
 
   it("should create public repo when visibility is public", async () => {
-    const { run, cmdExists } = await import("../../../src/core/exec");
+    const { run, cmdExists } = await import("@/core/exec");
     vi.mocked(cmdExists).mockResolvedValue(true);
     vi.mocked(run).mockClear();
     vi.mocked(run).mockResolvedValue();
@@ -112,7 +116,8 @@ describe("createProjectFromTemplate", () => {
     await createProjectFromTemplate(ctx);
 
     const calls = vi.mocked(run).mock.calls;
-    expect(calls[0][0]).toBe("gh");
-    expect(calls[0][1]).toContain("--public");
+    expect(calls[0]).toBeDefined();
+    expect(calls[0]?.[0]).toBe("gh");
+    expect(calls[0]?.[1]).toContain("--public");
   });
 });

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { cmdExists } from "../../../src/core/exec";
+import { cmdExists } from "@/core/exec";
 import { execa } from "execa";
 
 vi.mock("execa");

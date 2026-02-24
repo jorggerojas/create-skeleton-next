@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { DEFAULTS } from "../../../src/config/defaults";
+import { DEFAULTS } from "@/config/defaults";
 
 describe("defaults configuration", () => {
   it("should import the defaults configuration", () => {
