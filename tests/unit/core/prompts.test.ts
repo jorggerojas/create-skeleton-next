@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { promptForMissingOptions } from "../../../src/core/prompts";
+import { promptForMissingOptions } from "@/core/prompts";
 import prompts from "prompts";
 
 vi.mock("prompts");
-vi.mock("../../../src/core/exec", () => ({
+vi.mock("@/core/exec", () => ({
   cmdExists: vi.fn(() => Promise.resolve(true)),
 }));
 

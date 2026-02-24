@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { run, runWithOutput } from "../../../src/core/exec";
+import { run, runWithOutput } from "@/core/exec";
 import { execa } from "execa";
 
 vi.mock("execa");

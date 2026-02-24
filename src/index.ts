@@ -2,15 +2,15 @@
 import path from "node:path";
 import pc from "picocolors";
 import { Command } from "commander";
-import { DEFAULTS } from "./config/defaults";
-import { runPipeline, type Step } from "./core/pipeline";
-import { createProjectFromTemplate } from "./features/project/createFromTemplate";
-import { packageManagerInstall } from "./features/deps/packageManagerInstall";
-import { ensureComponentsJson } from "./features/ui/shadcn/ensureComponentsJson";
-import { shadcnAddComponents } from "./features/ui/shadcn/addComponents";
-import { initLocalGitIfNeeded } from "./features/git/initLocalGit";
-import type { Context, Manager, Router } from "./core/context";
-import { promptForMissingOptions } from "./core/prompts";
+import { DEFAULTS } from "@/config/defaults";
+import { runPipeline, type Step } from "@/core/pipeline";
+import { createProjectFromTemplate } from "@/features/project/createFromTemplate";
+import { packageManagerInstall } from "@/features/deps/packageManagerInstall";
+import { ensureComponentsJson } from "@/features/ui/shadcn/ensureComponentsJson";
+import { shadcnAddComponents } from "@/features/ui/shadcn/addComponents";
+import { initLocalGitIfNeeded } from "@/features/git/initLocalGit";
+import type { Context, Manager, Router } from "@/core/context";
+import { promptForMissingOptions } from "@/core/prompts";
 
 function die(msg: string): never {
   console.error(pc.red(`\n✖ ${msg}\n`));

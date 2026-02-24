@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { TEMPLATES } from "../../../src/templates";
+import { TEMPLATES } from "@/templates";
 
 describe("templates", () => {
   it("should have app router template", () => {

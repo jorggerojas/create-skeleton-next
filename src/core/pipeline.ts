@@ -1,5 +1,5 @@
 import pc from "picocolors";
-import type { Context } from "./context";
+import type { Context } from "@/core/context";
 
 export type Step = {
   id: string;

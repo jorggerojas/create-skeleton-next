@@ -1,7 +1,7 @@
 import prompts from "prompts";
-import type { Manager, Router } from "./context";
-import { DEFAULTS } from "../config/defaults";
-import { cmdExists } from "./exec";
+import type { Manager, Router } from "@/core/context";
+import { DEFAULTS } from "@/config/defaults";
+import { cmdExists } from "@/core/exec";
 
 type PromptAnswers = {
   projectName?: string;
