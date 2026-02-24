@@ -10,8 +10,11 @@ CLI to scaffold Next.js projects from skeleton templates with shadcn/ui componen
 ## Installation
 
 ```bash
-# Use directly with pnpm create
+# Use with your preferred package manager
 pnpm create skeleton-next my-app
+bun create skeleton-next my-app
+npm create skeleton-next my-app
+yarn create skeleton-next my-app
 
 # Or install globally
 pnpm add -g create-skeleton-next
@@ -25,10 +28,10 @@ create-skeleton-next my-app
 By default, the CLI will prompt you for options that are not provided via flags:
 
 ```bash
-# Will prompt for project name, router type, GitHub options, and install preference
+# Will prompt for project name, package manager, router type, GitHub options, and install preference
 pnpm create skeleton-next
 
-# Will only prompt for router type, GitHub options, and install preference
+# Will only prompt for package manager, router type, GitHub options, and install preference
 pnpm create skeleton-next my-app
 ```
 
@@ -37,7 +40,7 @@ pnpm create skeleton-next my-app
 Use `-y` or `--yes` to skip all prompts and use default values:
 
 ```bash
-# Uses all defaults: project name "next-skeleton-app", app router, private GitHub repo, install deps
+# Uses all defaults: project name "next-skeleton-app", pnpm, app router, private GitHub repo, install deps
 pnpm create skeleton-next --yes
 
 # Uses defaults for all options except project name
@@ -49,7 +52,7 @@ pnpm create skeleton-next my-app -y
 You can provide any combination of options via flags. If an option is not provided, the CLI will prompt for it (unless using `-y`):
 
 ```bash
-# Specify router type (will still prompt for GitHub and install options)
+# Specify router type (will still prompt for package manager, GitHub and install options)
 pnpm create skeleton-next my-app --router app
 pnpm create skeleton-next my-app --router pages
 
@@ -60,8 +63,8 @@ pnpm create skeleton-next my-app --public          # Make repo public
 pnpm create skeleton-next my-app --private         # Make repo private
 
 # Installation options
-pnpm create skeleton-next my-app --install         # Run pnpm install
-pnpm create skeleton-next my-app --no-install      # Skip pnpm install
+pnpm create skeleton-next my-app --install         # Run package manager install
+pnpm create skeleton-next my-app --no-install      # Skip package manager install
 
 # Combine options (no prompts will be shown)
 pnpm create skeleton-next my-app --router pages --no-github --no-install
@@ -70,21 +73,24 @@ pnpm create skeleton-next my-app --router pages --no-github --no-install
 ### All Options
 
 | Option | Description | Default |
-|--------|-------------|---------|
+| ------ | ----------- | ------ |
 | `-y, --yes` | Run with all defaults, no prompts | `false` |
 | `--router <type>` | Router type: `app` or `pages` | `app` |
 | `--github` | Create GitHub repository | `true` |
 | `--no-github` | Skip GitHub repository creation | - |
 | `--public` | Make GitHub repo public | `false` |
 | `--private` | Make GitHub repo private | `true` |
-| `--install` | Run `pnpm install` after creation | `true` |
-| `--no-install` | Skip `pnpm install` | - |
+| `--install` | Run package manager install after creation | `true` |
+| `--no-install` | Skip package manager install | - |
+
+**Package manager** (pnpm, bun, npm, yarn) is selected via interactive prompt when not using `-y`.
 
 ### Defaults
 
 When using `--yes` or `-y`, or when accepting default values in prompts, the following defaults are applied:
 
 - **Project name**: `next-skeleton-app`
+- **Package manager**: `pnpm`
 - **Router**: `app`
 - **GitHub**: enabled, private
 - **Install**: enabled
@@ -96,7 +102,7 @@ When using `--yes` or `-y`, or when accepting default values in prompts, the fol
 # Full interactive mode - prompts for everything
 pnpm create skeleton-next
 
-# Prompts only for router, GitHub, and install options
+# Prompts only for package manager, router, GitHub, and install options
 pnpm create skeleton-next my-new-project
 
 # No prompts, all defaults
@@ -126,11 +132,12 @@ This CLI uses the following GitHub template repositories:
    - Otherwise, clones the template repository via HTTPS and removes the `.git` directory
 
 2. **Dependencies Installation**:
-   - If `--install` is enabled (default), runs `pnpm install` in the project directory
+   - If `--install` is enabled (default), runs the selected package manager's install command (`pnpm install`, `bun install`, `npm install`, or `yarn install`)
 
 3. **shadcn/ui Setup**:
    - Verifies that the template includes a valid `components.json`
-   - Installs default shadcn/ui components using `pnpm dlx shadcn@latest add`
+   - Installs `tailwind-merge` as a dev dependency
+   - Adds default shadcn/ui components using the selected package manager (`pnpm dlx`, `bunx`, `npx`, or `yarn dlx`)
 
 4. **Git Initialization**:
    - If the project wasn't created via `gh` CLI, initializes a new git repository
@@ -138,7 +145,7 @@ This CLI uses the following GitHub template repositories:
 
 ## Requirements
 
-- **[pnpm](https://pnpm.io/)** - Package manager (required)
+- **Package manager**: One of [pnpm](https://pnpm.io/), [bun](https://bun.sh/), [npm](https://www.npmjs.com/), or [yarn](https://yarnpkg.com/) (required)
 - **[gh](https://cli.github.com/)** - GitHub CLI (optional, for `--github` flag)
 - **[git](https://git-scm.com/)** - For repository initialization (optional, but recommended)
 
@@ -151,13 +158,13 @@ This CLI uses the following GitHub template repositories:
 pnpm install
 
 # Run in development mode
-pnpm dev my-test-app --no-github --no-install
+pnpm dev --no-github --no-install
 
 # Build
 pnpm build
 
 # Test the built CLI
-node dist/index.js my-test-app --no-github --no-install
+node dist/index.js --no-github --no-install
 ```
 
 ### Project Structure
@@ -168,21 +175,22 @@ src/
   config/
     defaults.ts         # Default configuration values
   core/
-    args.ts             # Argument parsing utilities
     context.ts          # Context type definitions
     pipeline.ts         # Step pipeline runner
     exec.ts             # Command execution utilities
+    prompts.ts          # Interactive prompts
   features/
     project/
       createFromTemplate.ts   # Project creation logic
     git/
       initLocalGit.ts         # Git initialization
     deps/
-      pnpmInstall.ts          # Dependency installation
+      packageManagerInstall.ts  # Dependency installation
     ui/
       shadcn/
         ensureComponentsJson.ts  # Validate components.json
         addComponents.ts         # Add shadcn components
+        defaults.ts              # Default shadcn components
   templates/
     index.ts            # Template repository mappings
 ```
@@ -230,7 +238,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 - **CI Workflow**: Runs on push and PR to main/develop branches
   - ✅ Linting with Biome
   - ✅ Testing on multiple OS (Ubuntu, macOS, Windows)
-  - ✅ Testing on multiple Node versions (18, 20)
+  - ✅ Testing on Node 20
   - ✅ Coverage reporting to Codecov (target: 90%)
   - ✅ Build verification
 

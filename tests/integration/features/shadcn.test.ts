@@ -1,10 +1,15 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { ensureComponentsJson } from "../../../src/features/ui/shadcn/ensureComponentsJson";
-import { shadcnAddComponents } from "../../../src/features/ui/shadcn/addComponents";
-import type { Context } from "../../../src/core/context";
+import { ensureComponentsJson } from "@/features/ui/shadcn/ensureComponentsJson";
+import { shadcnAddComponents } from "@/features/ui/shadcn/addComponents";
+import type { Context } from "@/core/context";
+
+vi.mock("@/core/exec", () => ({
+  run: vi.fn().mockResolvedValue(undefined),
+  runWithOutput: vi.fn().mockResolvedValue("3.0.0"),
+}));
 
 describe("shadcn integration", () => {
   let tempDir: string;
@@ -22,6 +27,7 @@ describe("shadcn integration", () => {
         enabled: false,
         visibility: "private",
       },
+      manager: "pnpm",
       shadcn: {
         enabled: true,
         components: [],
@@ -51,25 +57,12 @@ describe("shadcn integration", () => {
   });
 
   describe("shadcnAddComponents", () => {
-    it("should create src/lib directory and utils.ts", () => {
-      // Test only the file creation part, not the actual pnpm execution
-      const libDir = path.join(tempDir, "src", "lib");
-      const utilsPath = path.join(libDir, "utils.ts");
+    it("should create src/lib directory and utils.ts when adding components", async () => {
+      ctx.shadcn.components = ["button"];
 
-      // Create the directory
-      fs.mkdirSync(libDir, { recursive: true });
+      await shadcnAddComponents(ctx);
 
-      // Write the utils.ts content (same as in addComponents.ts)
-      const utilsContent = `import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-`;
-      fs.writeFileSync(utilsPath, utilsContent, "utf-8");
-
-      // Verify file was created with correct content
+      const utilsPath = path.join(tempDir, "src", "lib", "utils.ts");
       expect(fs.existsSync(utilsPath)).toBe(true);
       const content = fs.readFileSync(utilsPath, "utf-8");
       expect(content).toContain("import { clsx");

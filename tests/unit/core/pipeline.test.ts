@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { runPipeline, type Step } from "../../../src/core/pipeline";
-import type { Context } from "../../../src/core/context";
+import { runPipeline, type Step } from "@/core/pipeline";
+import type { Context } from "@/core/context";
 
 describe("pipeline", () => {
   const mockContext: Context = {
@@ -17,6 +17,7 @@ describe("pipeline", () => {
       enabled: true,
       components: ["button"],
     },
+    manager: "pnpm",
   };
 
   describe("runPipeline", () => {

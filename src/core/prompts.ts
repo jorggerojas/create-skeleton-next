@@ -1,7 +1,7 @@
 import prompts from "prompts";
-import type { Router } from "./context";
-import { DEFAULTS } from "../config/defaults";
-import { cmdExists } from "./exec";
+import type { Manager, Router } from "@/core/context";
+import { DEFAULTS } from "@/config/defaults";
+import { cmdExists } from "@/core/exec";
 
 type PromptAnswers = {
   projectName?: string;
@@ -9,21 +9,25 @@ type PromptAnswers = {
   github?: boolean;
   visibility?: "public" | "private";
   install?: boolean;
+  manager?: Manager;
 };
 
 export async function promptForMissingOptions(
   initialProjectName?: string,
   initialRouter?: Router,
+  initialManager?: Manager,
   githubFlag?: boolean,
   visibilityFlag?: "public" | "private",
   installFlag?: boolean,
   yesFlag?: boolean,
 ): Promise<Required<PromptAnswers>> {
+  let packageManager = initialManager ?? DEFAULTS.manager;
   // If --yes flag is used, return all defaults immediately
   if (yesFlag) {
     return {
       projectName: initialProjectName ?? DEFAULTS.projectName,
       router: initialRouter ?? DEFAULTS.router,
+      manager: packageManager,
       github: githubFlag ?? DEFAULTS.github.enabled,
       visibility: visibilityFlag ?? DEFAULTS.github.visibility,
       install: installFlag ?? DEFAULTS.install,
@@ -42,6 +46,23 @@ export async function promptForMissingOptions(
       message: "Project name:",
       initial: DEFAULTS.projectName,
     });
+  }
+
+  // Manager
+  if (!initialManager) {
+    const answers = await prompts({
+      type: "select",
+      name: "manager",
+      message: "Which package manager do you want to use? (default: pnpm)",
+      choices: [
+        { title: "pnpm", value: "pnpm" },
+        { title: "bun", value: "bun" },
+        { title: "npm", value: "npm" },
+        { title: "yarn", value: "yarn" },
+      ],
+      initial: 0,
+    });
+    packageManager = answers?.manager ?? packageManager;
   }
 
   // Router
@@ -92,7 +113,7 @@ export async function promptForMissingOptions(
     questions.push({
       type: "confirm",
       name: "install",
-      message: "Install dependencies with pnpm?",
+      message: `Install dependencies with ${packageManager}?`,
       initial: DEFAULTS.install,
     });
   }
@@ -106,11 +127,12 @@ export async function promptForMissingOptions(
 
   return {
     projectName:
-      initialProjectName ?? answers.projectName ?? DEFAULTS.projectName,
-    router: initialRouter ?? answers.router ?? DEFAULTS.router,
-    github: githubFlag ?? answers.github ?? DEFAULTS.github.enabled,
+      initialProjectName ?? answers?.projectName ?? DEFAULTS.projectName,
+    router: initialRouter ?? answers?.router ?? DEFAULTS.router,
+    github: githubFlag ?? answers?.github ?? DEFAULTS.github.enabled,
     visibility:
-      visibilityFlag ?? answers.visibility ?? DEFAULTS.github.visibility,
-    install: installFlag ?? answers.install ?? DEFAULTS.install,
+      visibilityFlag ?? answers?.visibility ?? DEFAULTS.github.visibility,
+    install: installFlag ?? answers?.install ?? DEFAULTS.install,
+    manager: packageManager,
   };
 }

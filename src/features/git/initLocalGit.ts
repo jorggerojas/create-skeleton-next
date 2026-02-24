@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { run, cmdExists } from "../../core/exec";
-import type { Context } from "../../core/context";
+import { run, cmdExists } from "@/core/exec";
+import type { Context } from "@/core/context";
 
 export async function initLocalGitIfNeeded(ctx: Context) {
   const gitDir = path.join(ctx.targetDir, ".git");
