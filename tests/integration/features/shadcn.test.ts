@@ -22,6 +22,7 @@ describe("shadcn integration", () => {
         enabled: false,
         visibility: "private",
       },
+      manager: "pnpm",
       shadcn: {
         enabled: true,
         components: [],

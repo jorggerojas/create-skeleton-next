@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
-import { pnpmInstall } from "../../../src/features/deps/pnpmInstall";
+import { packageManagerInstall } from "../../../src/features/deps/packageManagerInstall";
 import type { Context } from "../../../src/core/context";
 
 vi.mock("../../../src/core/exec", () => ({
   run: vi.fn(),
 }));
 
-describe("pnpmInstall", () => {
-  it("should run pnpm install in target directory", async () => {
+describe("packageManagerInstall", () => {
+  it("should run package manager install in target directory", async () => {
     const { run } = await import("../../../src/core/exec");
     vi.mocked(run).mockResolvedValue();
 
@@ -16,6 +16,7 @@ describe("pnpmInstall", () => {
       targetDir: "/tmp/test-project",
       router: "app",
       yes: false,
+      manager: "pnpm",
       install: true,
       github: {
         enabled: false,
@@ -27,8 +28,12 @@ describe("pnpmInstall", () => {
       },
     };
 
-    await pnpmInstall(ctx);
+    await packageManagerInstall(ctx);
 
-    expect(run).toHaveBeenCalledWith("pnpm", ["install"], "/tmp/test-project");
+    expect(run).toHaveBeenCalledWith(
+      ctx.manager,
+      ["install"],
+      "/tmp/test-project",
+    );
   });
 });
