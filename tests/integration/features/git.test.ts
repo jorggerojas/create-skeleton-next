@@ -26,6 +26,7 @@ describe("git integration", () => {
         enabled: false,
         visibility: "private",
       },
+      manager: "pnpm",
       shadcn: {
         enabled: true,
         components: [],

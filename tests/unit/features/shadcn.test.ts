@@ -29,6 +29,7 @@ describe("shadcnAddComponents", () => {
         enabled: true,
         components: [],
       },
+      manager: "pnpm",
     };
   });
 

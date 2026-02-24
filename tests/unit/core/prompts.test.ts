@@ -20,6 +20,7 @@ describe("prompts", () => {
         undefined,
         undefined,
         undefined,
+        undefined,
         true, // yes flag
       );
 
@@ -37,6 +38,7 @@ describe("prompts", () => {
       const result = await promptForMissingOptions(
         "my-project",
         "pages",
+        "pnpm",
         false,
         "public",
         false,
@@ -62,6 +64,7 @@ describe("prompts", () => {
       const result = await promptForMissingOptions(
         undefined,
         "app",
+        "yarn",
         true,
         "private",
         true,
@@ -82,6 +85,7 @@ describe("prompts", () => {
       const result = await promptForMissingOptions(
         "test-project",
         undefined,
+        "bun",
         false,
         undefined,
         false,

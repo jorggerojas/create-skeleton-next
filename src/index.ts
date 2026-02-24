@@ -5,11 +5,11 @@ import { Command } from "commander";
 import { DEFAULTS } from "./config/defaults";
 import { runPipeline, type Step } from "./core/pipeline";
 import { createProjectFromTemplate } from "./features/project/createFromTemplate";
-import { pnpmInstall } from "./features/deps/pnpmInstall";
+import { packageManagerInstall } from "./features/deps/packageManagerInstall";
 import { ensureComponentsJson } from "./features/ui/shadcn/ensureComponentsJson";
 import { shadcnAddComponents } from "./features/ui/shadcn/addComponents";
 import { initLocalGitIfNeeded } from "./features/git/initLocalGit";
-import type { Context, Router } from "./core/context";
+import type { Context, Manager, Router } from "./core/context";
 import { promptForMissingOptions } from "./core/prompts";
 
 function die(msg: string): never {
@@ -42,6 +42,7 @@ async function main() {
     public?: boolean;
     private?: boolean;
     install?: boolean;
+    manager?: Manager;
   }>();
 
   // Validate router if provided
@@ -58,11 +59,13 @@ async function main() {
     visibilityFlag = "public";
   }
   const installFlag = opts.install;
+  const initialManager = opts.manager;
 
   // Prompt for missing options (unless --yes is used)
   const answers = await promptForMissingOptions(
     initialProjectName,
     initialRouter,
+    initialManager,
     githubFlag,
     visibilityFlag,
     installFlag,
@@ -83,6 +86,7 @@ async function main() {
       enabled: true,
       components: [...DEFAULTS.shadcn.components],
     },
+    manager: answers.manager,
   };
 
   const steps: Step[] = [
@@ -94,7 +98,7 @@ async function main() {
     {
       id: "deps:install",
       title: "Installing dependencies",
-      run: pnpmInstall,
+      run: packageManagerInstall,
       when: (c) => c.install,
     },
     {
