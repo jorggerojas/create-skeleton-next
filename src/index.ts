@@ -11,6 +11,7 @@ import { shadcnAddComponents } from "@/features/ui/shadcn/addComponents";
 import { initLocalGitIfNeeded } from "@/features/git/initLocalGit";
 import type { Context, Manager, Router } from "@/core/context";
 import { promptForMissingOptions } from "@/core/prompts";
+import { checkForUpdates } from "@/features/update-notifier";
 
 function die(msg: string): never {
   console.error(pc.red(`\n✖ ${msg}\n`));
@@ -150,6 +151,9 @@ async function main() {
 }
 
 try {
+  await checkForUpdates().catch(() => {
+    // ignore errors and continue with main
+  });
   await main();
 } catch (error) {
   const msg = error instanceof Error ? error.message : String(error);
