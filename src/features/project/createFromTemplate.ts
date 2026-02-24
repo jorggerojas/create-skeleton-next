@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import { run, cmdExists } from "../../core/exec";
-import { TEMPLATES } from "../../templates/index";
-import type { Context } from "../../core/context";
+import { run, cmdExists } from "@/core/exec";
+import { TEMPLATES } from "@/templates";
+import type { Context } from "@/core/context";
 
 function ensureEmptyOrNonExistent(dir: string) {
   if (!fs.existsSync(dir)) return;

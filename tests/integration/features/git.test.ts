@@ -2,10 +2,10 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { initLocalGitIfNeeded } from "../../../src/features/git/initLocalGit";
-import type { Context } from "../../../src/core/context";
+import { initLocalGitIfNeeded } from "@/features/git/initLocalGit";
+import type { Context } from "@/core/context";
 
-vi.mock("../../../src/core/exec", () => ({
+vi.mock("@/core/exec", () => ({
   run: vi.fn(),
   cmdExists: vi.fn(() => Promise.resolve(true)),
 }));
@@ -45,14 +45,14 @@ describe("git integration", () => {
       const gitDir = path.join(tempDir, ".git");
       fs.mkdirSync(gitDir);
 
-      const { run } = await import("../../../src/core/exec");
+      const { run } = await import("@/core/exec");
       await initLocalGitIfNeeded(ctx);
 
       expect(run).not.toHaveBeenCalled();
     });
 
     it("should init git when .git does not exist", async () => {
-      const { run } = await import("../../../src/core/exec");
+      const { run } = await import("@/core/exec");
       vi.mocked(run).mockClear();
 
       await initLocalGitIfNeeded(ctx);
@@ -64,6 +64,16 @@ describe("git integration", () => {
         ["commit", "-m", "chore: initial commit"],
         tempDir,
       );
+    });
+
+    it("should skip git init when git CLI is not available", async () => {
+      const { run, cmdExists } = await import("@/core/exec");
+      vi.mocked(cmdExists).mockResolvedValue(false);
+      vi.mocked(run).mockClear();
+
+      await initLocalGitIfNeeded(ctx);
+
+      expect(run).not.toHaveBeenCalled();
     });
   });
 });

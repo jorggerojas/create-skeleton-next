@@ -1,4 +1,4 @@
-import type { Manager } from "../core/context";
+import type { Manager } from "@/core/context";
 export const DEFAULTS = {
   projectName: "next-skeleton-app",
   router: "app",
