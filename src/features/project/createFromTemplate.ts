@@ -4,6 +4,12 @@ import { run, cmdExists } from "@/core/exec";
 import { TEMPLATES } from "@/templates";
 import type { Context } from "@/core/context";
 
+/**
+ * Ensure a filesystem path is either absent or empty.
+ *
+ * @param dir - Path to the directory to check
+ * @throws Error if `dir` exists and contains one or more entries
+ */
 function ensureEmptyOrNonExistent(dir: string) {
   if (!fs.existsSync(dir)) return;
   const contents = fs.readdirSync(dir);

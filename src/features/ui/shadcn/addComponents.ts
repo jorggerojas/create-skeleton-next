@@ -4,6 +4,15 @@ import path from "node:path";
 import fs from "node:fs";
 import pc from "picocolors";
 
+/**
+ * Adds configured shadcn components to the project and ensures required tooling is present.
+ *
+ * Ensures `src/lib/utils.ts` exists (creates it if missing), attempts to install `tailwind-merge`
+ * as a dev dependency using the project's package manager, and runs the appropriate `shadcn add`
+ * command for the project's manager to add the specified components.
+ *
+ * @param ctx - The creation context containing `targetDir`, package `manager`, and `shadcn.components` to add
+ */
 export async function shadcnAddComponents(ctx: Context) {
   if (!ctx.shadcn.components.length) return;
 

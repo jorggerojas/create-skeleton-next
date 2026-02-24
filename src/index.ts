@@ -12,11 +12,25 @@ import { initLocalGitIfNeeded } from "@/features/git/initLocalGit";
 import type { Context, Manager, Router } from "@/core/context";
 import { promptForMissingOptions } from "@/core/prompts";
 
+/**
+ * Prints an error message in red to stderr and terminates the process with exit code 1.
+ *
+ * @param msg - The error message to display
+ */
 function die(msg: string): never {
   console.error(pc.red(`\n✖ ${msg}\n`));
   process.exit(1);
 }
 
+/**
+ * CLI entrypoint that scaffolds a Next.js project from skeleton templates.
+ *
+ * Parses command-line options (project name, router, GitHub settings, package
+ * manager and install flags), prompts for any missing values (unless run with
+ * --yes), constructs a project context, executes the creation pipeline
+ * (project templating, optional dependency installation, shadcn component
+ * handling, and Git initialization), and prints next-step instructions.
+ */
 async function main() {
   const program = new Command();
 

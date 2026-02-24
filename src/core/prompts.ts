@@ -12,6 +12,20 @@ type PromptAnswers = {
   manager?: Manager;
 };
 
+/**
+ * Interactively prompt for any missing project setup options and return a complete options object.
+ *
+ * If a value is provided via the corresponding initial/flag parameter, that value is used; otherwise the function will prompt the user for it (unless `yesFlag` is true, in which case defaults are returned immediately).
+ *
+ * @param initialProjectName - Optional initial project name; when omitted the user will be prompted for a name.
+ * @param initialRouter - Optional initial router choice ("app" or "pages"); when omitted the user will be prompted to choose.
+ * @param initialManager - Optional initial package manager ("pnpm" | "bun" | "npm" | "yarn"); when omitted the user will be prompted to choose.
+ * @param githubFlag - If `true` or `false`, explicitly enable or disable GitHub repo creation; when `undefined` the user will be prompted.
+ * @param visibilityFlag - If provided ("public" or "private"), sets repository visibility; when `undefined` the user will be prompted if GitHub creation is enabled.
+ * @param installFlag - If `true` or `false`, explicitly enable or disable installing dependencies; when `undefined` the user will be prompted.
+ * @param yesFlag - When `true`, skip all prompts and return defaults merged with any provided initial/flag values.
+ * @returns An object containing all required prompt answers: `projectName`, `router`, `manager`, `github`, `visibility`, and `install`.
+ */
 export async function promptForMissingOptions(
   initialProjectName?: string,
   initialRouter?: Router,

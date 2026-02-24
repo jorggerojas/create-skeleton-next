@@ -3,6 +3,13 @@ import path from "node:path";
 import { run, cmdExists } from "@/core/exec";
 import type { Context } from "@/core/context";
 
+/**
+ * Ensures a Git repository exists in the target directory and creates an initial commit if needed.
+ *
+ * If a `.git` directory already exists in `ctx.targetDir`, or if the `git` command is unavailable, the function does nothing.
+ *
+ * @param ctx - Context whose `targetDir` is used as the repository root and working directory for git commands
+ */
 export async function initLocalGitIfNeeded(ctx: Context) {
   const gitDir = path.join(ctx.targetDir, ".git");
 
