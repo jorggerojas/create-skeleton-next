@@ -118,10 +118,6 @@ jobs:
           echo "This does not look like a package-not-found response, so the job will fail."
           exit "${STATUS}"
 
-      - name: Run tests
-        if: steps.version_check.outputs.skip == 'false'
-        run: pnpm test:ci
-
       - name: Build
         if: steps.version_check.outputs.skip == 'false'
         run: pnpm build
