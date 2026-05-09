@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/jorggerojas/create-skeleton-next/compare/v1.1.0...v1.1.1) (2026-05-09)
+
+
+### Features
+
+* add dependabot alert file from github web ([072001a](https://github.com/jorggerojas/create-skeleton-next/commit/072001a0d66e77a90618d908f0b2e176fa0daf73))
+
+
+### CI/CD
+
+* add npm publish workflow and package metadata ([10bd533](https://github.com/jorggerojas/create-skeleton-next/commit/10bd533e565dc60ad01a318343f6572a5ca39a25))
+* update release flow ([81f9288](https://github.com/jorggerojas/create-skeleton-next/commit/81f9288c51709e26c2ba929fb400cc3d6f7d5c5a))
+
 ## [1.1.0](https://github.com/jorggerojas/create-skeleton-next/compare/v1.0.1...v1.1.0) (2026-02-24)
 
 
