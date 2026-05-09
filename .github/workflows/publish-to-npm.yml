@@ -1,0 +1,131 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: publish-npm-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Show tool versions
+        run: |
+          node --version
+          npm --version
+          pnpm --version
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Read package info
+        id: pkg
+        shell: bash
+        run: |
+          echo "name=$(node -p "require('./package.json').name")" >> "$GITHUB_OUTPUT"
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Verify last tag matches package.json version
+        shell: bash
+        run: |
+          PACKAGE_VERSION="${{ steps.pkg.outputs.version }}"
+          EXPECTED_TAG="v${PACKAGE_VERSION}"
+          LAST_TAG="$(git describe --tags --abbrev=0)"
+
+          echo "package.json version: ${PACKAGE_VERSION}"
+          echo "last git tag: ${LAST_TAG}"
+
+          if [ "${LAST_TAG}" != "${EXPECTED_TAG}" ]; then
+            echo "ERROR: last tag (${LAST_TAG}) does not match package.json version (${EXPECTED_TAG})"
+            exit 1
+          fi
+
+      - name: Verify tag commit is reachable from main HEAD
+        shell: bash
+        run: |
+          PACKAGE_VERSION="${{ steps.pkg.outputs.version }}"
+          EXPECTED_TAG="v${PACKAGE_VERSION}"
+          TAG_COMMIT="$(git rev-list -n 1 "${EXPECTED_TAG}")"
+
+          echo "Expected tag: ${EXPECTED_TAG}"
+          echo "Tag commit: ${TAG_COMMIT}"
+          echo "Current HEAD: $(git rev-parse HEAD)"
+
+          if ! git merge-base --is-ancestor "${TAG_COMMIT}" HEAD; then
+            echo "ERROR: tag commit ${EXPECTED_TAG} is not contained in main HEAD history"
+            exit 1
+          fi
+
+      - name: Check if version already exists on npm
+        id: version_check
+        shell: bash
+        run: |
+          set -o pipefail
+
+          PACKAGE_NAME="${{ steps.pkg.outputs.name }}"
+          PACKAGE_VERSION="${{ steps.pkg.outputs.version }}"
+          SPEC="${PACKAGE_NAME}@${PACKAGE_VERSION}"
+
+          STDERR_FILE="$(mktemp)"
+          STDOUT_FILE="$(mktemp)"
+
+          if npm view "${SPEC}" version >"${STDOUT_FILE}" 2>"${STDERR_FILE}"; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Version ${PACKAGE_VERSION} already published on npm. Skipping."
+            cat "${STDOUT_FILE}"
+            exit 0
+          fi
+
+          STATUS=$?
+          STDERR_CONTENT="$(cat "${STDERR_FILE}")"
+
+          echo "npm view failed with exit code: ${STATUS}"
+          echo "stderr:"
+          echo "${STDERR_CONTENT}"
+
+          if printf '%s' "${STDERR_CONTENT}" | grep -Eqi "E404|404[[:space:]]+Not[[:space:]]+Found|['\"]?${PACKAGE_NAME}(@|%40)${PACKAGE_VERSION}['\"]?[[:space:]]+is[[:space:]]+not[[:space:]]+in[[:space:]]+this[[:space:]]+registry"; then
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "Version ${PACKAGE_VERSION} is not published yet. Continuing."
+            exit 0
+          fi
+
+          echo "ERROR: Unable to determine whether ${SPEC} exists on npm."
+          echo "This does not look like a package-not-found response, so the job will fail."
+          exit "${STATUS}"
+
+      - name: Run tests
+        if: steps.version_check.outputs.skip == 'false'
+        run: pnpm test:ci
+
+      - name: Build
+        if: steps.version_check.outputs.skip == 'false'
+        run: pnpm build
+
+      - name: Publish to npm
+        if: steps.version_check.outputs.skip == 'false'
+        run: npm publish --provenance --access public
