@@ -49,37 +49,38 @@
   "author": "jorggerojas",
   "license": "MIT",
   "dependencies": {
-    "commander": "14.0.3",
+    "commander": "15.0.0",
     "execa": "9.6.1",
     "picocolors": "1.1.1",
     "prompts": "2.4.2",
-    "semver": "7.8.0",
+    "semver": "7.8.1",
     "update-notifier": "7.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.14",
+    "@biomejs/biome": "2.4.16",
     "@codecov/vite-plugin": "2.0.1",
-    "@commitlint/cli": "21.0.0",
-    "@commitlint/config-conventional": "21.0.0",
+    "@commitlint/cli": "21.0.2",
+    "@commitlint/config-conventional": "21.0.2",
     "@testing-library/jest-dom": "6.9.1",
-    "@types/node": "25.6.2",
+    "@types/node": "25.9.1",
     "@types/prompts": "2.4.9",
     "@types/semver": "7.7.1",
     "@types/update-notifier": "6.0.8",
-    "@vitest/coverage-istanbul": "4.1.5",
+    "@vitest/coverage-istanbul": "4.1.8",
     "happy-dom": "20.9.0",
     "husky": "9.1.7",
-    "lint-staged": "17.0.3",
+    "lint-staged": "17.0.7",
     "standard-version": "9.5.0",
     "tsup": "8.5.1",
-    "tsx": "4.21.0",
+    "tsx": "4.22.4",
     "typescript": "6.0.3",
-    "vite": "8.0.11",
-    "vitest": "4.1.5"
+    "vite": "8.0.16",
+    "vitest": "4.1.8"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx,json,css,mjs,cjs}": [
       "biome check --write --error-on-warnings --files-ignore-unknown=true"
     ]
-  }
+  },
+  "packageManager": "pnpm@11.5.0+sha512.dbfcc4f81cf48597afd4bc391ffdf12c11f1a9fb83a395bfa6b0a2d9cc2fd8ffebafdb1ccbd529632153f793904c2615b7f09fe1a345473fd1c35845172a8eb1"
 }
