@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/jorggerojas/create-skeleton-next/compare/v1.1.1...v1.1.2) (2026-08-19)
+
+
+### Features
+
+* update packages ([37381cf](https://github.com/jorggerojas/create-skeleton-next/commit/37381cfde4f8e88fead7bd5be4a0711e7d7a1b84))
+
+
+### Bug Fixes
+
+* remove pnpm version from config ([a136688](https://github.com/jorggerojas/create-skeleton-next/commit/a13668830ada29f2f3a674ceeee3b811e12544b2))
+
+
+### CI/CD
+
+* update publish workflow ([73aeca9](https://github.com/jorggerojas/create-skeleton-next/commit/73aeca9a370244d81b8a146c18f6927625222076))
+
 ### [1.1.1](https://github.com/jorggerojas/create-skeleton-next/compare/v1.1.0...v1.1.1) (2026-05-09)
 
 
