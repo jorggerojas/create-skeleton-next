@@ -238,7 +238,7 @@ This project uses GitHub Actions for continuous integration and deployment:
 - **CI Workflow**: Runs on push and PR to main/develop branches
   - ✅ Linting with Biome
   - ✅ Testing on multiple OS (Ubuntu, macOS, Windows)
-  - ✅ Testing on Node 20
+  - ✅ Testing on Node 22
   - ✅ Coverage reporting to Codecov (target: 90%)
   - ✅ Build verification
 
